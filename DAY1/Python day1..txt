@@ -1,0 +1,150 @@
+
+# DAY 1
+# Python Fundamentals, Operators, Conditionals & Loops
+# =========================================================
+
+
+# 1. Celsius to Fahrenheit
+
+celsius = float(input("Enter temperature in Celsius: "))
+
+fahrenheit = (celsius * 9 / 5) + 32
+
+print(f"Temperature in Fahrenheit: {fahrenheit:.2f}")
+
+
+# 2. Employee Salary Calculation
+
+basic_salary = float(input("Enter basic salary: "))
+
+hra = basic_salary * 0.20
+da = basic_salary * 0.15
+pf = basic_salary * 0.08
+
+net_salary = basic_salary + hra + da - pf
+
+print(f"HRA: {hra:.2f}")
+print(f"DA: {da:.2f}")
+print(f"PF: {pf:.2f}")
+print(f"Net Take-Home Salary: {net_salary:.2f}")
+
+
+# 3. Leap Year
+
+year = int(input("Enter calendar year: "))
+
+if (year % 400 == 0) or ((year % 4 == 0) and (year % 100 != 0)):
+    print("Leap Year")
+else:
+    print("Not a Leap Year")
+
+
+# 4. Marks and Grade
+
+mark1 = float(input("Enter marks for Subject 1: "))
+mark2 = float(input("Enter marks for Subject 2: "))
+mark3 = float(input("Enter marks for Subject 3: "))
+
+average = (mark1 + mark2 + mark3) / 3
+
+print(f"Average Percentage: {average:.2f}")
+
+if average >= 90:
+    grade = "A+"
+elif average >= 75:
+    grade = "A"
+elif average >= 50:
+    grade = "B"
+else:
+    grade = "Fail"
+
+print("Grade:", grade)
+
+
+# 5. Voting Eligibility and Senior Citizen Discount
+
+age = int(input("Enter customer's age: "))
+
+voting_status = "Eligible to Vote" if age >= 18 else "Not Eligible to Vote"
+
+senior_discount = "Senior Citizen Discount Applicable" if age >= 60 else "No Senior Citizen Discount"
+
+print(voting_status)
+print(senior_discount)
+
+
+# 6. Multiplication Table
+
+n = int(input("Enter an integer: "))
+
+for i in range(1, 11):
+    print(f"{n} x {i} = {n * i}")
+
+
+# 7. Sum and Average of First N Natural Numbers
+
+n = int(input("Enter N: "))
+
+i = 1
+total = 0
+
+while i <= n:
+    total += i
+    i += 1
+
+average = total / n
+
+print("Sum:", total)
+print(f"Average: {average:.2f}")
+
+
+# 8. Prime Number
+
+n = int(input("Enter an integer: "))
+
+if n < 2:
+    print("Not a Prime Number")
+else:
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            print("Not a Prime Number")
+            break
+    else:
+        print("Prime Number")
+
+
+# 9. Reverse Number and Palindrome
+
+n = int(input("Enter an integer: "))
+
+original = n
+reverse = 0
+
+while n > 0:
+    digit = n % 10
+    reverse = reverse * 10 + digit
+    n = n // 10
+
+print("Reversed Number:", reverse)
+
+if original == reverse:
+    print("Palindrome")
+else:
+    print("Not a Palindrome")
+
+
+# 10. HTTP Status Code using match-case
+
+status_code = int(input("Enter HTTP status code (200, 400, 404, 500): "))
+
+match status_code:
+    case 200:
+        print("200 - OK")
+    case 400:
+        print("400 - Bad Request")
+    case 404:
+        print("404 - Not Found")
+    case 500:
+        print("500 - Internal Server Error")
+    case _:
+        print("Unknown HTTP Status Code")
