@@ -1,0 +1,289 @@
+
+               # STUDENT PERFORMANCE ANALYZER
+
+
+
+def analyze_students(records):
+    qualified = []
+    topper = None
+    highest_total = -1
+
+    for record in records:
+        name = record[0]
+        marks = record[1:]
+
+        total = sum(marks)
+        average = total / 3
+
+        if average >= 75:
+            qualified.append(name)
+
+        if total > highest_total:
+            highest_total = total
+            topper = name
+
+    return {
+        "qualified": qualified,
+        "topper": topper
+    }
+
+
+n = int(input("Enter number of students: "))
+
+records = []
+
+for i in range(n):
+    print("\nEnter details for student", i + 1)
+
+    name = input("Enter student name: ")
+    mark1 = float(input("Enter mark for Subject 1: "))
+    mark2 = float(input("Enter mark for Subject 2: "))
+    mark3 = float(input("Enter mark for Subject 3: "))
+
+    records.append((name, mark1, mark2, mark3))
+
+print("\nStudent Performance:")
+print(analyze_students(records))
+
+
+
+                  #  REMOVE DUPLICATES WHILE PRESERVING ORDER
+
+
+
+
+def remove_duplicates(numbers):
+    result = []
+    seen = set()
+
+    for number in numbers:
+        if number not in seen:
+            result.append(number)
+            seen.add(number)
+
+    return result
+
+
+numbers = list(map(int, input(
+    "\nEnter integers separated by spaces: "
+).split()))
+
+print("After removing duplicates:")
+print(remove_duplicates(numbers))
+
+
+
+
+
+# WORD FREQUENCY COUNTER
+
+
+
+def word_frequency(text):
+    words = text.lower().split()
+    frequency = {}
+
+    for word in words:
+        frequency[word] = frequency.get(word, 0) + 1
+
+    return frequency
+
+
+text = input("\nEnter a sentence: ")
+
+print("Word Frequency:")
+print(word_frequency(text))
+
+
+
+
+
+                   #FILTER AND TRANSFORM DATA
+
+
+
+
+marks = list(map(int, input(
+    "\nEnter marks separated by spaces: "
+).split()))
+
+result = [mark ** 2 for mark in marks if mark >= 70]
+
+print("Squares of marks greater than or equal to 70:")
+print(result)
+
+
+
+
+
+
+                   # TWO SUM
+
+
+
+def two_sum(nums, target):
+    seen = {}
+
+    for i, number in enumerate(nums):
+        required = target - number
+
+        if required in seen:
+            return [seen[required], i]
+
+        seen[number] = i
+
+    return []
+
+
+nums = list(map(int, input(
+    "\nEnter numbers separated by spaces: "
+).split()))
+
+target = int(input("Enter target value: "))
+
+result = two_sum(nums, target)
+
+if result:
+    print("Indices:", result)
+else:
+    print("No valid pair found")
+
+
+
+
+
+                # VALID ANAGRAM
+
+
+def is_anagram(s, t):
+    return sorted(s.lower()) == sorted(t.lower())
+
+
+s = input("\nEnter first string: ")
+t = input("Enter second string: ")
+
+print("Is Anagram:", is_anagram(s, t))
+
+
+
+
+               #  CONTAINS DUPLICATE
+
+
+def contains_duplicate(nums):
+    return len(nums) != len(set(nums))
+
+
+nums = list(map(int, input(
+    "\nEnter integers separated by spaces: "
+).split()))
+
+print("Contains Duplicate:", contains_duplicate(nums))
+
+
+
+
+
+                       #  FIRST NON-REPEATING CHARACTER
+
+
+def first_non_repeating(text):
+    frequency = {}
+
+    for char in text:
+        frequency[char] = frequency.get(char, 0) + 1
+
+    for char in text:
+        if frequency[char] == 1:
+            return char
+
+    return None
+
+
+text = input("\nEnter a string: ")
+
+result = first_non_repeating(text)
+
+if result is not None:
+    print("First non-repeating character:", result)
+else:
+    print("No non-repeating character found")
+
+
+
+
+                 #  GROUP ANAGRAMS
+
+
+def group_anagrams(words):
+    groups = {}
+
+    for word in words:
+        key = ''.join(sorted(word.lower()))
+
+        if key not in groups:
+            groups[key] = []
+
+        groups[key].append(word)
+
+    return list(groups.values())
+
+
+n = int(input("\nEnter number of words: "))
+
+words = []
+
+for i in range(n):
+    word = input("Enter word " + str(i + 1) + ": ")
+    words.append(word)
+
+print("Grouped Anagrams:")
+print(group_anagrams(words))
+
+
+
+
+               #  CUSTOMER DATA CLEANING
+
+
+def clean_customer_data(data):
+    cleaned = []
+    seen = set()
+
+    for record in data:
+
+        record = record.strip()
+
+        name, city, age = record.split(",")
+
+        name = name.strip().title()
+        city = city.strip().title()
+        age = int(age.strip())
+
+        key = (name, city, age)
+
+        if key not in seen:
+            cleaned.append({
+                "name": name,
+                "city": city,
+                "age": age
+            })
+
+            seen.add(key)
+
+    return cleaned
+
+
+n = int(input("\nEnter number of customer records: "))
+
+data = []
+
+for i in range(n):
+    record = input(
+        "Enter customer " + str(i + 1) +
+        " as Name, City, Age: "
+    )
+    data.append(record)
+
+print("\nCleaned Customer Records:")
+print(clean_customer_data(data))
