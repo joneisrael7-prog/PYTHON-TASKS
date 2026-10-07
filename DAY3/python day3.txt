@@ -1,0 +1,759 @@
+import re
+import json
+from collections import OrderedDict, Counter
+from abc import ABC, abstractmethod
+
+def parse_numeric_log(log_records):
+    valid_records = []
+    corrupted_count = 0
+
+    for record in log_records:
+        try:
+            parts = record.split(",")
+
+            if len(parts) != 2:
+                raise ValueError("Malformed record")
+
+            txn_id = parts[0].strip()
+            value = float(parts[1].strip())
+
+            if not txn_id:
+                raise ValueError("Missing transaction ID")
+
+            valid_records.append({
+                "id": txn_id,
+                "value": value
+            })
+
+        except (ValueError, TypeError):
+            corrupted_count += 1
+
+    return {
+        "valid": valid_records,
+        "corrupted_count": corrupted_count
+    }
+
+
+print("======= Log Parser ==========")
+
+n = int(input("Enter number of log records: "))
+
+log_records = []
+
+for i in range(n):
+    record = input(
+        f"Enter log record {i + 1} "
+        "(Example: TXN101, 145.50): "
+    )
+    log_records.append(record)
+
+print(parse_numeric_log(log_records))
+
+
+
+def stream_batches(data, batch_size):
+
+    if batch_size <= 0:
+        raise ValueError(
+            "Batch size must be greater than 0"
+        )
+
+    batch = []
+
+    for item in data:
+        batch.append(item)
+
+        if len(batch) == batch_size:
+            yield batch
+            batch = []
+
+    if batch:
+        yield batch
+
+
+print("\n==========Batch Generator ==========")
+
+data_input = input(
+    "Enter numbers separated by spaces: "
+)
+
+data = [
+    int(x)
+    for x in data_input.split()
+]
+
+batch_size = int(
+    input("Enter batch size: ")
+)
+
+print(list(stream_batches(data, batch_size)))
+
+
+
+def extract_contacts(text):
+
+    email_pattern = (
+        r"\b[A-Za-z0-9._%+-]+@"
+        r"[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"
+    )
+
+    phone_pattern = (
+        r"(?<!\d)(?:\+91\s?)?"
+        r"[6-9]\d{9}(?!\d)"
+    )
+
+    emails = re.findall(
+        email_pattern,
+        text
+    )
+
+    phones = re.findall(
+        phone_pattern,
+        text
+    )
+
+    return {
+        "emails": emails,
+        "phones": phones
+    }
+
+
+print("\n========== Contact Extractor ==========")
+
+text = input(
+    "Enter text containing emails and phone numbers: "
+)
+
+print(extract_contacts(text))
+
+
+class Transaction:
+
+    def __init__(
+        self,
+        txn_id,
+        customer,
+        price,
+        qty,
+        discount
+    ):
+
+        self.txn_id = str(txn_id)
+        self.customer = str(customer)
+        self.price = float(price)
+        self.qty = int(qty)
+        self.discount = float(discount)
+
+        if not 0.0 <= self.discount <= 1.0:
+            raise ValueError(
+                "Discount must be between 0 and 1"
+            )
+
+        self.__net_total = (
+            self.price * self.qty
+        ) * (1 - self.discount)
+
+    def get_net_total(self):
+        return self.__net_total
+
+    def to_dict(self):
+        return {
+            "txn_id": self.txn_id,
+            "customer": self.customer,
+            "net_total": self.__net_total
+        }
+
+
+print("\n========== Transaction ==========")
+
+txn_id = input("Enter transaction ID: ")
+customer = input("Enter customer name: ")
+price = float(input("Enter price: "))
+qty = int(input("Enter quantity: "))
+discount = float(
+    input("Enter discount (for example 0.10): ")
+)
+
+txn = Transaction(
+    txn_id,
+    customer,
+    price,
+    qty,
+    discount
+)
+
+print("Net Total:", txn.get_net_total())
+print("Transaction:", txn.to_dict())
+
+
+def analyze_sales_data(records):
+
+    unique_records = []
+
+    for record in records:
+        if record not in unique_records:
+            unique_records.append(record)
+
+    
+    prices = []
+
+    for record in unique_records:
+        try:
+            price = float(record["price"])
+
+            prices.append(price)
+
+        except (ValueError, TypeError):
+            pass
+
+    if prices:
+        mean_price = sum(prices) / len(prices)
+    else:
+        mean_price = 0
+
+    categories = {}
+
+    for record in unique_records:
+
+        category = record["category"]
+
+        try:
+            price = float(record["price"])
+        except (ValueError, TypeError):
+            price = mean_price
+
+        quantity = int(record["quantity"])
+
+        revenue = price * quantity
+
+        if category not in categories:
+            categories[category] = []
+
+        categories[category].append(revenue)
+
+    result = []
+
+    for category, revenues in categories.items():
+
+        total_revenue = sum(revenues)
+
+        avg_revenue = (
+            total_revenue / len(revenues)
+        )
+
+        result.append({
+            "category": category,
+            "total_revenue": total_revenue,
+            "avg_revenue": avg_revenue
+        })
+
+    return result
+
+
+print("\n========== Sales Analysis ==========")
+
+sales_count = int(
+    input("Enter number of sales records: ")
+)
+
+sales_records = []
+
+for i in range(sales_count):
+
+    print(f"\nSale {i + 1}")
+
+    txn_id = input("Transaction ID: ")
+    category = input("Category: ")
+    price = input(
+        "Price (enter blank for missing price): "
+    )
+    quantity = int(
+        input("Quantity: ")
+    )
+
+    if price.strip() == "":
+        price = None
+    else:
+        price = float(price)
+
+    sales_records.append({
+        "txn_id": txn_id,
+        "category": category,
+        "price": price,
+        "quantity": quantity
+    })
+
+sales_summary = analyze_sales_data(
+    sales_records
+)
+
+print("\nSales Summary:")
+
+for item in sales_summary:
+    print(item)
+
+
+def export_kpi_summary(
+    summary_data,
+    top_category,
+    output_filepath
+):
+
+    report = {
+        "status": "SUCCESS",
+        "top_category": top_category,
+        "metrics": summary_data
+    }
+
+    with open(
+        output_filepath,
+        "w",
+        encoding="utf-8"
+    ) as file:
+
+        json.dump(
+            report,
+            file,
+            indent=4
+        )
+
+    with open(
+        output_filepath,
+        "r",
+        encoding="utf-8"
+    ) as file:
+
+        return json.load(file)
+
+
+print("\n========== KPI Export ==========")
+
+top_category = input(
+    "Enter top category: "
+)
+
+file_name = input(
+    "Enter output file name "
+    "(example: kpi_report.json): "
+)
+
+if file_name.strip() == "":
+    file_name = "kpi_report.json"
+
+kpi_result = export_kpi_summary(
+    sales_summary,
+    top_category,
+    file_name
+)
+
+print("\nKPI Report:")
+print(kpi_result)
+
+
+class InsufficientFundsError(Exception):
+    pass
+
+
+class NegativeAmountError(Exception):
+    pass
+
+
+class BankAccount:
+
+    def __init__(
+        self,
+        account_number,
+        initial_balance=0
+    ):
+
+        self.account_number = account_number
+        self.__balance = float(
+            initial_balance
+        )
+
+        if self.__balance < 0:
+            raise NegativeAmountError(
+                "Initial balance cannot be negative"
+            )
+
+    def deposit(self, amount):
+
+        amount = float(amount)
+
+        if amount <= 0:
+            raise NegativeAmountError(
+                "Deposit must be greater than zero"
+            )
+
+        self.__balance += amount
+
+    def withdraw(self, amount):
+
+        amount = float(amount)
+
+        if amount <= 0:
+            raise NegativeAmountError(
+                "Withdrawal must be greater than zero"
+            )
+
+        if amount > self.__balance:
+            raise InsufficientFundsError(
+                "Insufficient funds"
+            )
+
+        self.__balance -= amount
+
+    def get_balance(self):
+        return self.__balance
+
+
+print("\n========== Bank Account ==========")
+
+account_number = input(
+    "Enter account number: "
+)
+
+initial_balance = float(
+    input("Enter initial balance: ")
+)
+
+account = BankAccount(
+    account_number,
+    initial_balance
+)
+
+deposit_amount = float(
+    input("Enter deposit amount: ")
+)
+
+try:
+    account.deposit(deposit_amount)
+
+    withdraw_amount = float(
+        input("Enter withdrawal amount: ")
+    )
+
+    account.withdraw(withdraw_amount)
+
+    print(
+        "Final Balance:",
+        account.get_balance()
+    )
+
+except (
+    NegativeAmountError,
+    InsufficientFundsError
+) as error:
+
+    print("Transaction Error:", error)
+
+class DataBuffer:
+
+    def __init__(self, capacity):
+
+        if capacity <= 0:
+            raise ValueError(
+                "Capacity must be greater than zero"
+            )
+
+        self.capacity = capacity
+        self.cache = OrderedDict()
+
+    def get(self, key):
+
+        if key not in self.cache:
+            return None
+
+        self.cache.move_to_end(key)
+
+        return self.cache[key]
+
+    def put(self, key, value):
+
+        if key in self.cache:
+            del self.cache[key]
+
+        self.cache[key] = value
+
+        if len(self.cache) > self.capacity:
+            self.cache.popitem(
+                last=False
+            )
+
+
+print("\n========== LRU Buffer ==========")
+
+capacity = int(
+    input("Enter buffer capacity: ")
+)
+
+buffer = DataBuffer(capacity)
+
+number_of_items = int(
+    input("How many items do you want to add? ")
+)
+
+for i in range(number_of_items):
+
+    key = input(
+        f"Enter key {i + 1}: "
+    )
+
+    value = input(
+        f"Enter value for {key}: "
+    )
+
+    buffer.put(key, value)
+
+search_key = input(
+    "Enter key to retrieve: "
+)
+
+print(
+    "Value:",
+    buffer.get(search_key)
+)
+
+
+def detect_outliers_zscore(
+    values,
+    threshold
+):
+
+    if not values:
+        return []
+
+    mean = sum(values) / len(values)
+
+    variance = sum(
+        (x - mean) ** 2
+        for x in values
+    ) / len(values)
+
+    std = variance ** 0.5
+
+    if std == 0:
+        return []
+
+    outliers = []
+
+    for value in values:
+
+        z_score = abs(
+            (value - mean) / std
+        )
+
+        if z_score > threshold:
+            outliers.append(value)
+
+    return outliers
+
+
+print("\n========== Outlier Detection ==========")
+
+values_input = input(
+    "Enter numeric values separated by spaces: "
+)
+
+values = [
+    float(x)
+    for x in values_input.split()
+]
+
+threshold = float(
+    input("Enter Z-score threshold: ")
+)
+
+print(
+    "Outliers:",
+    detect_outliers_zscore(
+        values,
+        threshold
+    )
+)
+
+def top_k_frequent_logs(logs, k):
+
+    if k <= 0:
+        return []
+
+    counter = Counter()
+
+    for log in logs:
+
+        try:
+
+            tag = log.split(
+                ":",
+                1
+            )[0].strip()
+
+            if tag:
+                counter[tag] += 1
+
+        except (AttributeError, IndexError):
+            pass
+
+    sorted_tags = sorted(
+        counter.items(),
+        key=lambda item: (
+            -item[1],
+            item[0]
+        )
+    )
+
+    return [
+        tag
+        for tag, count in sorted_tags[:k]
+    ]
+
+
+print("\n========== Log Analyzer ==========")
+
+log_count = int(
+    input("Enter number of logs: ")
+)
+
+logs = []
+
+for i in range(log_count):
+
+    log = input(
+        f"Enter log {i + 1}: "
+    )
+
+    logs.append(log)
+
+k = int(
+    input("Enter K: ")
+)
+
+print(
+    "Top logs:",
+    top_k_frequent_logs(
+        logs,
+        k
+    )
+)
+
+
+class BaseDataTransformer(ABC):
+
+    @abstractmethod
+    def transform(self, data):
+        pass
+
+
+class NormalizerTransformer(
+    BaseDataTransformer
+):
+
+    def transform(self, data):
+
+        if not data:
+            return []
+
+        max_value = max(data)
+
+        if max_value == 0:
+            return [
+                0.0
+                for x in data
+            ]
+
+        return [
+            round(
+                x / max_value,
+                2
+            )
+            for x in data
+        ]
+
+
+class StandardizerTransformer(
+    BaseDataTransformer
+):
+
+    def transform(self, data):
+
+        if not data:
+            return []
+
+        mean = sum(data) / len(data)
+
+        variance = sum(
+            (x - mean) ** 2
+            for x in data
+        ) / len(data)
+
+        std = variance ** 0.5
+
+        if std == 0:
+            return [
+                0.0
+                for x in data
+            ]
+
+        return [
+            round(
+                (x - mean) / std,
+                2
+            )
+            for x in data
+        ]
+
+
+def execute_transformer(
+    transformer,
+    data
+):
+
+    return transformer.transform(data)
+
+
+print("\n========== Transformer ==========")
+
+numbers_input = input(
+    "Enter numbers separated by spaces: "
+)
+
+numbers = [
+    float(x)
+    for x in numbers_input.split()
+]
+
+choice = input(
+    "Choose transformer "
+    "(1 = Normalizer, 2 = Standardizer): "
+)
+
+if choice == "1":
+
+    transformer = NormalizerTransformer()
+
+    print(
+        "Normalized:",
+        execute_transformer(
+            transformer,
+            numbers
+        )
+    )
+
+elif choice == "2":
+
+    transformer = StandardizerTransformer()
+
+    print(
+        "Standardized:",
+        execute_transformer(
+            transformer,
+            numbers
+        )
+    )
+
+else:
+
+    print("Invalid choice")
+
+
+print("\n========== PROGRAM COMPLETED ==========")
