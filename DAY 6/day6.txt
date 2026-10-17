@@ -1,0 +1,206 @@
+# 1.
+
+stock = {'LED': 20, 'RESISTOR': 50, 'SENSOR': 4}
+requested = ['LED', 'SENSOR', 'SWITCH']
+
+for component in requested:
+    quantity = stock.get(component)
+    
+    if quantity is not None:
+        print(f"{component}: {quantity} available")
+    else:
+        print(f"{component}: unavailable")
+
+# 2.
+
+
+A = {101, 102, 103, 105}
+B = {102, 104, 105, 106}
+
+both_courses = sorted(A & B)
+only_A = sorted(A - B)
+either_course = sorted(A | B)
+
+print("Both courses:", both_courses)
+print("Only Course A:", only_A)
+print("Either course:", either_course)
+
+
+# 3.
+
+
+marks = {'Arun': 85, 'Priya': 92, 'Kavin': 78}
+
+inverted_marks = {}
+
+for key, value in marks.items():
+    inverted_marks[value] = key
+
+print(inverted_marks)
+
+
+# 4.
+
+
+
+names = ['Anu', 'Arun', 'Bala', 'Banu', 'Cathy', 'Asha']
+
+groups = {}
+
+for name in names:
+    first_letter = name[0].upper()
+
+    if first_letter not in groups:
+        groups[first_letter] = []
+
+    groups[first_letter].append(name)
+
+print(groups)
+
+# 5.
+
+
+store_a = {'LED': 20, 'Cable': 10, 'Board': 3}
+store_b = {'Cable': 5, 'Sensor': 7, 'LED': 8}
+
+combined = store_a.copy()
+
+for item, quantity in store_b.items():
+    if item in combined:
+        combined[item] += quantity
+    else:
+        combined[item] = quantity
+
+print("Combined inventory:", combined)
+
+
+# 6.
+
+
+
+sales = {
+    'Sensor': [4, 6, 5],
+    'Cable': [10, 2, 3],
+    'Board': [8, 7],
+    'LED': [5, 5, 5]
+}
+
+totals = {}
+
+for product, quantities in sales.items():
+    totals[product] = sum(quantities)
+
+ranked_products = sorted(
+    totals.items(),
+    key=lambda item: (-item[1], item[0])
+)
+
+for product, total in ranked_products:
+    print(f"{product}: {total}")
+
+
+
+# 7.
+
+
+records = [
+    ('D01', 'Lab-A', 'READY'),
+    ('D02', 'Lab-B', 'BUSY'),
+    ('D01', 'Lab-C', 'MAINTENANCE')
+]
+
+devices = {}
+
+for device_id, location, status in records:
+    devices[device_id] = {
+        'location': location,
+        'status': status
+    }
+
+print(devices)
+
+
+# 8.
+
+
+permissions = {
+    'admin': {'read', 'write', 'delete'},
+    'operator': {'read', 'write'},
+    'auditor': {'read', 'export'}
+}
+
+user_permissions = list(permissions.values())
+
+common_permissions = sorted(set.intersection(*user_permissions))
+all_permissions = sorted(set.union(*user_permissions))
+
+print("Common permissions:", common_permissions)
+print("All permissions:", all_permissions)
+
+
+# 9.
+
+
+nums = [1, 1, 1]
+k = 2
+
+prefix_sum = 0
+count = 0
+prefix_dict = {0: 1}
+
+for num in nums:
+    prefix_sum += num
+
+    if prefix_sum - k in prefix_dict:
+        count += prefix_dict[prefix_sum - k]
+
+    prefix_dict[prefix_sum] = prefix_dict.get(prefix_sum, 0) + 1
+
+print("Count:", count)
+
+
+# 10.
+
+
+
+from collections import Counter
+
+s = 'ADOBECODEBANC'
+t = 'ABC'
+
+if not t or not s:
+    result = ""
+else:
+    required = Counter(t)
+    window = {}
+    left = 0
+    formed = 0
+    required_chars = len(required)
+    min_len = float('inf')
+    start = 0
+
+    for right, char in enumerate(s):
+        window[char] = window.get(char, 0) + 1
+
+        if char in required and window[char] == required[char]:
+            formed += 1
+
+        while formed == required_chars:
+            if right - left + 1 < min_len:
+                min_len = right - left + 1
+                start = left
+
+            left_char = s[left]
+            window[left_char] -= 1
+
+            if left_char in required and window[left_char] < required[left_char]:
+                formed -= 1
+
+            left += 1
+
+    result = "" if min_len == float('inf') else s[start:start + min_len]
+
+print("Minimum window:", repr(result))
+
+
+
