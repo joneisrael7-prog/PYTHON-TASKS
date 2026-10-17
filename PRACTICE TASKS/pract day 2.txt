@@ -1,0 +1,356 @@
+          #Prime, Factorial, Fibonacci, Digit Sum & Reverse
+
+
+# Input
+N = int(input("Enter N: "))
+number = int(input("Enter a number: "))
+
+# 1. Print all prime numbers up to N
+print("Primes:", end=" ")
+for i in range(2, N + 1):
+    is_prime = True
+    for j in range(2, i):
+        if i % j == 0:
+            is_prime = False
+            break
+    if is_prime:
+        print(i, end=" ")
+
+# 2. Calculate factorial of N
+factorial = 1
+for i in range(1, N + 1):
+    factorial *= i
+print("\nFactorial:", factorial)
+
+# 3. Print the first N Fibonacci numbers
+a, b = 0, 1
+print("Fibonacci:", end=" ")
+for i in range(N):
+    print(a, end=" ")
+    a, b = b, a + b
+
+# 4. Calculate sum of digits
+temp = abs(number)
+digit_sum = 0
+while temp > 0:
+    digit = temp % 10
+    digit_sum += digit
+    temp //= 10
+print("\nDigit Sum:", digit_sum)
+
+# 5. Reverse the number
+temp = abs(number)
+reverse = 0
+while temp > 0:
+    digit = temp % 10
+    reverse = reverse * 10 + digit
+    temp //= 10
+
+if number < 0:
+    reverse = -reverse
+
+print("Reverse:", reverse)
+
+
+
+            #Patterns & Multiplication Grid
+
+
+N = int(input("Enter N: "))
+
+# 1. Right Triangle
+print("\nRight Triangle")
+for i in range(1, N + 1):
+    for j in range(1, i + 1):
+        print("*", end="")
+    print()
+
+# 2. Pyramid
+print("\nPyramid")
+for i in range(1, N + 1):
+    for j in range(N - i):
+        print(" ", end="")
+    for j in range(2 * i - 1):
+        print("*", end="")
+    print()
+
+# 3. Number Triangle
+print("\nNumber Triangle")
+for i in range(1, N + 1):
+    for j in range(1, i + 1):
+        print(j, end="")
+    print()
+
+# 4. Multiplication Grid (1 to 10)
+print("\nMultiplication Grid")
+for i in range(1, 11):
+    for j in range(1, 11):
+        print(f"{i} x {j} = {i * j}", end="\t")
+    print()
+
+
+              # String Analyzer
+
+
+s = input("Enter a string: ")
+
+# 1. Reverse using a loop
+reverse = ""
+for ch in s:
+    reverse = ch + reverse
+
+print("Loop Reverse:", reverse)
+
+# 2. Reverse using slicing
+print("Slice Reverse:", s[::-1])
+
+# 3. Check palindrome (ignore case and spaces)
+cleaned = ""
+for ch in s:
+    if ch != " ":
+        cleaned += ch.lower()
+
+if cleaned == cleaned[::-1]:
+    print("Palindrome: Yes")
+else:
+    print("Palindrome: No")
+
+# 4. Count vowels, consonants, and digits
+vowels = 0
+consonants = 0
+digits = 0
+
+for ch in s:
+    if ch.lower() in "aeiou":
+        vowels += 1
+    elif ch.isalpha():
+        consonants += 1
+    elif ch.isdigit():
+        digits += 1
+
+print("Vowels:", vowels)
+print("Consonants:", consonants)
+print("Digits:", digits)
+
+
+               #Formatted Electricity Bill
+
+
+customer = input("Enter customer name: ")
+units = int(input("Enter units consumed: "))
+
+# Calculate bill using slab-based charges
+amount = 0
+
+if units <= 100:
+    amount = units * 2
+elif units <= 200:
+    amount = 100 * 2
+    amount += (units - 100) * 3
+elif units <= 300:
+    amount = 100 * 2
+    amount += 100 * 3
+    amount += (units - 200) * 5
+else:
+    amount = 100 * 2
+    amount += 100 * 3
+    amount += 100 * 5
+    amount += (units - 300) * 8
+
+# Print formatted bill
+print("\nCustomer : ", customer)
+print(f"Units    : {units}")
+print(f"Amount   : ₹{amount:.2f}")
+
+
+
+
+                  #ATM Cash Withdrawal & Denomination Breakdown
+
+
+amount = int(input("Withdrawal Amount: "))
+
+if amount <= 0:
+    print("Invalid withdrawal amount")
+elif amount > 20000:
+    print("Error: Withdrawal limit is ₹20000")
+elif amount % 10 != 0:
+    print("Error: Amount must be a multiple of ₹10")
+else:
+    remaining = amount
+    total_notes = 0
+
+    # ₹500 notes
+    notes500 = remaining // 500
+    remaining %= 500
+    total_notes += notes500
+
+    # ₹200 notes
+    notes200 = remaining // 200
+    remaining %= 200
+    total_notes += notes200
+
+    # ₹100 notes
+    notes100 = remaining // 100
+    remaining %= 100
+    total_notes += notes100
+
+    # ₹50 notes
+    notes50 = remaining // 50
+    remaining %= 50
+    total_notes += notes50
+
+    # ₹10 notes
+    notes10 = remaining // 10
+    remaining %= 10
+    total_notes += notes10
+
+    print(f"₹500 notes : {notes500}")
+    print(f"₹200 notes : {notes200}")
+    print(f"₹100 notes : {notes100}")
+    print(f"₹50 notes  : {notes50}")
+    print(f"₹10 notes  : {notes10}")
+    print(f"Total Notes : {total_notes}")
+    print(f"Amount      : ₹{amount}")
+
+
+
+                 #Digital Parking Fee & Time Calculator
+
+
+
+entry = input("Entry Time: ")
+exit = input("Exit Time: ")
+
+# Convert entry time into minutes
+eh, em = map(int, entry.split(":"))
+entry_minutes = eh * 60 + em
+
+# Convert exit time into minutes
+xh, xm = map(int, exit.split(":"))
+exit_minutes = xh * 60 + xm
+
+# Handle crossing midnight
+if exit_minutes < entry_minutes:
+    exit_minutes += 24 * 60
+
+# Calculate duration
+duration = exit_minutes - entry_minutes
+hours = duration // 60
+minutes = duration % 60
+
+# Calculate billable hours (round up partial hours)
+billable_hours = hours
+if minutes > 0:
+    billable_hours += 1
+
+# Calculate parking fee
+if billable_hours == 0:
+    fee = 0
+else:
+    fee = 30
+    if billable_hours > 1:
+        fee += (billable_hours - 1) * 20
+
+# Display receipt
+print(f"Parking Duration : {hours} hours {minutes} minutes")
+print(f"Billable Hours   : {billable_hours}")
+print(f"Parking Fee      : ₹{fee}")
+
+
+
+
+                  #. Delivery Charge & Earnings Report
+
+
+
+n = int(input("Number of Deliveries: "))
+
+total_distance = 0
+total_earnings = 0
+
+for i in range(1, n + 1):
+    distance = float(input(f"Distance {i}: "))
+
+    total_distance += distance
+
+    if distance <= 5:
+        earnings = 40
+    else:
+        earnings = 40 + (distance - 5) * 8
+
+    total_earnings += earnings
+
+if n > 0:
+    average_distance = total_distance / n
+else:
+    average_distance = 0
+
+print(f"Total Distance     : {total_distance:.2f} km")
+print(f"Total Earnings     : ₹{total_earnings:.2f}")
+print(f"Average Distance   : {average_distance:.2f} km")
+
+
+
+
+                 #Reverse Integer
+
+
+
+x = int(input("Enter an integer: "))
+
+reverse = 0
+num = abs(x)
+
+while num > 0:
+    digit = num % 10
+    reverse = reverse * 10 + digit
+    num //= 10
+
+if x < 0:
+    reverse = -reverse
+
+print("Reversed Integer:", reverse)
+
+
+
+                     #Palindrome Number
+
+
+
+x = int(input("Enter an integer: "))
+
+if x < 0:
+    print(False)
+else:
+    original = x
+    reverse = 0
+
+    while x > 0:
+        digit = x % 10
+        reverse = reverse * 10 + digit
+        x //= 10
+
+    if original == reverse:
+        print(True)
+    else:
+        print(False)
+
+
+
+
+               #Fizz Buzz
+
+
+
+N = int(input("Enter N: "))
+
+for i in range(1, N + 1):
+    if i % 3 == 0 and i % 5 == 0:
+        print("FizzBuzz")
+    elif i % 3 == 0:
+        print("Fizz")
+    elif i % 5 == 0:
+        print("Buzz")
+    else:
+        print(i)
