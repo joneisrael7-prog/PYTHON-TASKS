@@ -1,0 +1,283 @@
+#classificatio report
+
+n = int(input())
+numbers = list(map(int, input().split()))
+
+positive = 0
+negative = 0
+zero = 0
+even = 0
+odd = 0
+both = 0
+only3 = 0
+only5 = 0
+neither = 0
+
+for num in numbers:
+    if num > 0:
+        positive += 1
+    elif num < 0:
+        negative += 1
+    else:
+        zero += 1
+    if num % 2 == 0:
+        even += 1
+    else:
+        odd += 1
+    if num % 3 == 0 and num % 5 == 0:
+        both += 1
+    elif num % 3 == 0:
+        only3 += 1
+    elif num % 5 == 0:
+        only5 += 1
+    else:
+        neither += 1
+
+print("Positive:", positive)
+print("Negative:", negative)
+print("Zero:", zero)
+print("Even:", even)
+print("Odd:", odd)
+print("Divisible by both 3 and 5:", both)
+print("Divisible only by 3:", only3)
+print("Divisible only by 5:", only5)
+print("Divisible by neither:", neither)
+
+
+             #valid input until accept
+
+invalid = 0
+
+while True:
+    n = int(input())
+
+    if n < 1 or n > 100:
+        print("Invalid input")
+        invalid += 1
+        continue
+
+    break
+
+print("Accepted value:", n)
+print("Invalid attempts:", invalid)
+
+
+                #. Menu-Driven Unit Converter
+
+
+while True:
+    print("\nMenu:")
+    print("1. Celsius to Fahrenheit")
+    print("2. Kilometres to Miles")
+    print("3. Kilograms to Pounds")
+    print("4. Exit")
+
+    choice = int(input("Enter your choice: "))
+
+    if choice == 1:
+        celsius = float(input("Enter Celsius: "))
+        fahrenheit = (celsius * 9 / 5) + 32
+        print("Celsius to Fahrenheit:", fahrenheit)
+
+    elif choice == 2:
+        km = float(input("Enter Kilometres: "))
+        miles = km * 0.6214
+        print("Kilometres to Miles:", round(miles, 2))
+
+    elif choice == 3:
+        kg = float(input("Enter Kilograms: "))
+        pounds = kg * 2.20462
+        print("Kilograms to Pounds:", round(pounds, 2))
+
+    elif choice == 4:
+        print("Exit")
+        break
+
+    else:
+        print("Invalid choice! Please try again.")
+        continue
+
+
+                #Multiplication Table with Selective Skipping
+
+
+N = int(input())
+skipped = 0
+
+for i in range(1, 21):
+    result = N * i
+
+    if result > 100:
+        break
+
+    if result % 3 == 0:
+        skipped += 1
+        continue
+
+    print(f"{N} x {i} = {result}")
+
+print(f"Skipped results: {skipped}")
+
+
+
+            #. Password Validation System
+
+
+
+password = input()
+
+uppercase = False
+lowercase = False
+digit = False
+special = False
+
+for ch in password:
+    if ch.isupper():
+        uppercase = True
+    elif ch.islower():
+        lowercase = True
+    elif ch.isdigit():
+        digit = True
+    else:
+        special = True
+
+length_valid = len(password) >= 8
+
+if uppercase and lowercase and digit and special and length_valid:
+    print("Valid password")
+else:
+    print("Invalid password")
+
+print("Uppercase:", "Present" if uppercase else "Missing")
+print("Lowercase:", "Present" if lowercase else "Missing")
+print("Digit:", "Present" if digit else "Missing")
+print("Special character:", "Present" if special else "Missing")
+print("Minimum length:", "Satisfied" if length_valid else "Not satisfied")
+
+
+               #. Hollow Square Pattern
+
+
+N = int(input())
+
+for i in range(N):
+    for j in range(N):
+        if i == 0 or i == N - 1 or j == 0 or j == N - 1:
+            print("*", end=" ")
+        else:
+            print(" ", end=" ")
+    print()
+
+
+
+          #. First Perfect Square in a Range
+
+
+L, R = map(int, input().split())
+
+found = False
+
+for i in range(L, R + 1):
+    j = 1
+
+    while j * j < i:
+        j += 1
+
+    if j * j == i:
+        print("First perfect square:", i)
+        found = True
+        break
+
+if not found:
+    print("No perfect square found")
+
+
+
+            #. Number Guessing Game with Limited Attempts
+
+
+
+secret = 8
+attempts = 0
+
+while attempts < 5:
+    guess = int(input())
+    attempts += 1
+
+    if guess < secret:
+        print("Too Low")
+    elif guess > secret:
+        print("Too High")
+    else:
+        print("Correct")
+        break
+
+if attempts == 5 and guess != secret:
+    print("Game Over")
+
+
+
+           #. Longest Consecutive Equal Values
+
+
+
+n = int(input())
+numbers = list(map(int, input().split()))
+
+current_value = numbers[0]
+current_length = 1
+
+best_value = numbers[0]
+best_length = 1
+
+for i in range(1, n):
+    if numbers[i] == current_value:
+        current_length += 1
+    else:
+        current_value = numbers[i]
+        current_length = 1
+
+    if current_length > best_length:
+        best_length = current_length
+        best_value = current_value
+
+print("Value =", best_value, ", Length =", best_length)
+
+
+
+               #. Transaction Validation & Summary
+
+
+
+normal = 0
+large = 0
+suspicious = 0
+total = 0
+
+while True:
+    amount = int(input())
+
+    if amount == -1:
+        break
+
+    if amount == 0:
+        pass
+    elif amount < 0:
+        continue
+    elif amount <= 1000:
+        normal += 1
+        total += amount
+    elif amount <= 5000:
+        large += 1
+        total += amount
+    else:
+        suspicious += 1
+        total += amount
+
+        if suspicious == 3:
+            break
+
+print("Normal transactions:", normal)
+print("Large transactions:", large)
+print("Suspicious transactions:", suspicious)
+print("Total valid amount:", total)
