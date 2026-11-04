@@ -1,0 +1,64 @@
+#Q1.Find MAX without MAX function()
+
+
+scores=[85,92,78,92,88]
+largest=scores[0]
+for i in scores:
+    if i>largest:
+        largest=i
+print("max value:",largest) 
+
+
+
+#Q2
+
+
+
+my_list = [1, 2, 'example', [1, 2]]
+
+result = []
+
+for item in my_list:
+    if isinstance(item, list):
+        result.extend(item)
+    else:
+        result.append(item)
+
+print(result)
+
+
+
+Q3.2nd largest number
+
+
+
+scores = [85, 92, 78, 92, 88]
+
+largest = second = 0
+
+for num in scores:
+    if num > largest:
+        second = largest
+        largest = num
+    elif num > second and num != largest:
+        second = num
+
+print("Second largest number:", second)
+
+
+
+#Q4. prime or not prime 
+
+
+
+n = int(input("Enter a number: "))
+
+if n <= 1:
+    print("Not a Prime Number")
+else:
+    for i in range(2, n):
+        if n % i == 0:
+            print("Not a Prime Number")
+            break
+    else:
+        print("Prime Number")
