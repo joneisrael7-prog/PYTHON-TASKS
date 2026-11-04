@@ -1,0 +1,310 @@
+#Q1.Product of Array Except Self 
+
+
+def product_except_self(nums):
+    n = len(nums)
+    answer = [1] * n
+
+    # Calculate prefix products
+    prefix = 1
+    for i in range(n):
+        answer[i] = prefix
+        prefix *= nums[i]
+
+    # Calculate suffix products
+    suffix = 1
+    for i in range(n - 1, -1, -1):
+        answer[i] *= suffix
+        suffix *= nums[i]
+
+    return answer
+
+
+nums = [1, 2, 3, 4]
+result = product_except_self(nums)
+print("Product array:", result)
+
+
+
+#Q2.Use Default and Keyword Arguments
+
+
+
+def calculate_bill(prices, tax_rate=0.10, discount=0.20):
+    # Calculate subtotal
+    subtotal = sum(prices)
+
+    # Calculate discount
+    discount_amount = subtotal * discount
+
+    # Calculate amount after discount
+    discounted_total = subtotal - discount_amount
+
+    # Calculate tax on discounted amount
+    tax = discounted_total * tax_rate
+
+    # Calculate final total
+    final_total = discounted_total + tax
+
+    print(f"Subtotal: {subtotal:.2f}")
+    print(f"Discount: {discount_amount:.2f}")
+    print(f"Tax: {tax:.2f}")
+    print(f"Final total: {final_total:.2f}")
+
+
+
+prices = [100, 50]
+
+calculate_bill(prices, tax_rate=0.10, discount=0.20)
+
+
+
+#Q3. Variable-Length Positional Arguments with *args
+
+
+
+
+def average_readings(*args):
+    if len(args) == 0:
+        return None
+
+    average = sum(args) / len(args)
+    return average
+
+
+# Input 1
+result = average_readings(10, 20, 30, 40)
+
+if result is None:
+    print("No readings provided")
+else:
+    print("Average:", result)
+
+
+# Input 2
+result = average_readings()
+
+if result is None:
+    print("No readings provided")
+else:
+     print("Average:", result)
+
+
+
+#Q4. Keyword Configuration with **kwargs
+
+
+
+def create_device_config(device_id, **kwargs):
+    allowed_fields = ["baud_rate", "parity", "timeout_ms", "debug"]
+
+    config = {"device_id": device_id}
+
+    for key, value in kwargs.items():
+        if key in allowed_fields:
+            config[key] = value
+        else:
+            raise ValueError(f"Unsupported key: {key}")
+
+    return config
+
+
+
+result = create_device_config(
+    'D01',
+    baud_rate=115200,
+    parity='N',
+    timeout_ms=500
+)
+
+print(result)
+
+
+
+
+#Q5.Group Anagrams 
+
+
+
+
+def group_anagrams(strs):
+    groups = {}
+
+    for word in strs:
+        key = ''.join(sorted(word))
+
+        if key not in groups:
+            groups[key] = []
+
+        groups[key].append(word)
+
+    return list(groups.values())
+
+
+# Input
+strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+
+# Output
+result = group_anagrams(strs)
+
+print("Groups:")
+for group in result:
+    print(group)
+
+
+
+#Q6.Top K Frequent Elements
+
+
+
+
+def top_k_frequent(nums, k):
+    frequency = {}
+
+    # Count frequency of each number
+    for num in nums:
+        if num in frequency:
+            frequency[num] += 1
+        else:
+            frequency[num] = 1
+
+    # Sort numbers based on frequency
+    sorted_items = sorted(
+        frequency.items(),
+        key=lambda item: item[1],
+        reverse=True
+    )
+
+    # Get top k frequent numbers
+    result = []
+
+    for i in range(k):
+        result.append(sorted_items[i][0])
+
+    return result
+
+nums = [1, 1, 1, 2, 2, 3]
+k = 2
+
+# Output
+print("Top", k, "frequent values:", top_k_frequent(nums, k))
+
+
+
+#Q7.Longest Consecutive Sequence 
+
+
+
+
+def longest_consecutive(nums):
+    num_set = set(nums)
+
+    longest = 0
+    best_sequence = []
+
+    for num in num_set:
+
+        # Check if num is the starting number
+        if num - 1 not in num_set:
+            current = num
+            count = 1
+            sequence = [num]
+
+            # Find consecutive numbers
+            while current + 1 in num_set:
+                current += 1
+                count += 1
+                sequence.append(current)
+
+            # Update longest sequence
+            if count > longest:
+                longest = count
+                best_sequence = sequence
+
+    return longest, best_sequence
+
+
+nums = [100, 4, 200, 1, 3, 2]
+
+length, sequence = longest_consecutive(nums)
+
+print("Longest consecutive sequence length:", length)
+print("Sequence:", ", ".join(map(str, sequence)))
+
+
+
+#Q8.Contiguous Array
+
+
+
+
+def find_max_length(nums):
+    balance = 0
+    max_length = 0
+
+    # Store the first occurrence of balance 0
+    balance_dict = {0: -1}
+
+    for i in range(len(nums)):
+        if nums[i] == 0:
+            balance -= 1
+        else:
+            balance += 1
+
+        if balance in balance_dict:
+            length = i - balance_dict[balance]
+            max_length = max(max_length, length)
+        else:
+            balance_dict[balance] = i
+
+    return max_length
+
+
+nums = [0, 1, 0]
+
+result = find_max_length(nums)
+print("Maximum balanced subarray length:", result)
+
+
+
+#Q9.Length Of Last Word
+
+
+
+
+def length_of_last_word(s):
+    words = s.strip().split()
+
+    if len(words) == 0:
+        return 0
+
+    return len(words[-1])
+
+s = "   Embedded Python   "
+
+result = length_of_last_word(s)
+print("Length of last word:", result)
+
+
+
+
+#Q10.Find The Index Of The First Occurrence In a String
+
+
+
+def str_str(haystack, needle):
+    if needle == "":
+        return 0
+
+    for i in range(len(haystack) - len(needle) + 1):
+        if haystack[i:i + len(needle)] == needle:
+            return i
+
+    return -1
+
+
+haystack = "datascience"
+needle = "science"
+
+result = str_str(haystack, needle)
+print("First occurrence index:", result) 
